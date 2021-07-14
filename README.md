@@ -1,5 +1,5 @@
 # manx-UI--Speech
-minority, alternative, new, extended User Interfaces like Speech Recognition
+Minority, Alternative, New, eXtended User Interfaces like Speech Recognition
 
 
 See this project's github wiki:
