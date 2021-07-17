@@ -1,0 +1,117 @@
+
+#Persistent
+
+;;;; TBD: merge these 2 libraries that do almost same thing
+;;#include %A_ScriptDir%/../../AutoHotKey stuff/libag/transient_ToolTip_message.ahk-lib
+;;#include %A_ScriptDir%/Transient_Tooltip.ahk-lib
+
+
+
+;;  residing in AutoHotKey stuff/libag/transient_ToolTip_message.ahk-lib
+
+;; TBD: merge/refactor The following related to error and other messages for Dragon
+;; /cygdrive/c/Users/glew/Stuff/Windows Stuff/Dragon Stuff/ahk/log+errors-for-Dragon
+;; /cygdrive/c/Users/glew/Stuff/Windows Stuff/Dragon Stuff/ahk/Transient_Tooltip.ahk-lib
+;; /cygdrive/c/Users/glew/Stuff/Windows Stuff/AutoHotKey stuff/libag/transient_ToolTip_message.ahk-lib
+
+
+
+;; I would really like to
+;; Display a transient message
+;; While it is playing say a speech message
+;; but have a button so that I can dismiss the displayed message and/or the speech message
+;; And also have the displayed message timeout after a while
+;;
+;; Tooltips are easy to make transient
+;; and overlap with his speech easily
+;;
+;; Message boxes can be made transient
+;; but they are nonblocking by default.
+;; You have to start a separate task or program to make them nonblocking.
+;;
+;; e.g. the Windows "msg" command
+;; https://stackoverflow.com/questions/843585/windows-how-to-display-a-non-blocking-alert-confirmation-window
+
+
+
+
+
+;;  rename file Transient_Tooltips-and_Messages
+
+
+;;  IIRC  I duplicated these in part because of a desire to keep the Dragon stuff
+;; and the AutoHotKey stuff independent
+
+
+
+
+;; TBD: extend to support WhichToolTip 1-20
+;; TBD: extend to support X,Y position
+
+
+Transient_Tooltip(msg,timeout:=1000,x:="",y:="")
+{
+	ToolTip,%msg%,x,y
+	if( timeout != 0 )
+		SetTimer, RemoveToolTip,%timeout%
+}
+
+RemoveToolTip()
+{
+	ToolTip
+	return
+}
+
+
+
+;; TBD: refactoring in progress rename Transient_MsgBox  <--from-old-- Transient_Message
+;; TBD: rename all uses of Transient_Message
+Transient_Message(msg,timeout_in_seconds:=15)
+{
+	Transient_MsgBox(msg,timeout_in_seconds)
+}
+Transient_MsgBox(msg,timeout_in_seconds:=15)
+{
+	;timeout_s=15
+	MsgBox,0x40000,,%msg%`n`n(this msgbox closes in %timeout_in_seconds%s),%timeout_in_seconds%
+}
+
+
+;; TBD:when I have a Transient_MsgBox
+;; I sometimes want it to be nonblocking,
+;; especially if it is combined with a spoken message from say(...)
+;; Otherwise you get the spoken message first, and then after the message is finished you get the MsgBox.
+;; Tooltips are nonblocking, but they don't have an obvious way of dismissing them.
+
+
+;; https://stackoverflow.com/questions/843585/windows-how-to-display-a-non-blocking-alert-confirmation-window
+
+;; You can use the msg tool:
+
+;; Send a message to a user.
+;;
+;; MSG {username | sessionname | sessionid | @filename | *}
+;;     [/SERVER:servername] [/TIME:seconds] [/V] [/W] [message]
+;;
+;;   username            Identifies the specified username.
+;;   sessionname         The name of the session.
+;;   sessionid           The ID of the session.
+;;   @filename           Identifies a file containing a list of usernames,
+;;                       sessionnames, and sessionids to send the message to.
+;;   *                   Send message to all sessions on specified server.
+;;   /SERVER:servername  server to contact (default is current).
+;;   /TIME:seconds       Time delay to wait for receiver to acknowledge msg.
+;;   /V                  Display information about actions being performed.
+;;   /W                  Wait for response from user, useful with /V.
+;;   message             Message to send.  If none specified, prompts for it
+;;                       or reads from stdin.
+;; The call
+;;
+;; msg * Some text
+;; doesn't block. It also has the nice capability of closing the message box again after a set amount of time if required.
+;;
+;;
+;; or
+;;
+;; start MessageBox.vbs
+;; ...where MessageBox.vbs contains a call to the MsgBox function.
